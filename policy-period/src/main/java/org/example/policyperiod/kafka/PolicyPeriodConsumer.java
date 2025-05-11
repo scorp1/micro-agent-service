@@ -1,0 +1,39 @@
+package org.example.policyperiod.kafka;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import lombok.RequiredArgsConstructor;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.example.policyperiod.entity.PolicyPeriod;
+import org.example.policyperiod.service.PolicyPeriodService;
+import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Value;
+
+@Service
+@RequiredArgsConstructor
+public class PolicyPeriodConsumer {
+    private final PolicyPeriodService policyPeriodService;
+    private final KafkaTemplate<String, String> kafkaTemplate;
+    @Value("${spring.kafka.topics.policy-period-response-create}")
+    private String topicResponse;
+
+    @KafkaListener(topics = "policy-period-request-create", groupId = "my-group")
+    public void processRequest(ConsumerRecord<String, String> record) {
+        String requestId = record.key();
+        String agentReportString = record.value();
+        System.out.println("Received request from Kafka: " + requestId);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+
+        try {
+            PolicyPeriod agentReport = objectMapper.readValue(agentReportString, PolicyPeriod.class);
+            PolicyPeriod reportResult =  policyPeriodService.save(agentReport);
+            kafkaTemplate.send(topicResponse, requestId, objectMapper.writeValueAsString(reportResult));
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+}

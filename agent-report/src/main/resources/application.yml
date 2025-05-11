@@ -1,0 +1,39 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5434/app
+    username: app
+    password: app
+    driverClassName: org.postgresql.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    format-sql: true
+  application:
+    name: agent-report
+  kafka:
+    bootstrap-servers: localhost:29092  # Адрес брокера Kafka (для Docker это может быть "kafka:9092")
+    consumer:
+      group-id: my-group  # Уникальная группа потребителей
+      auto-offset-reset: earliest
+    producer:
+      acks: all  # Настройки подтверждения от Kafka
+    topics:
+      agent-report-request-create: agent-report-request-create
+      agent-report-response-create: agent-report-response-create
+
+#logging:
+#  level:
+#    root: INFO
+#    org.hibernate: DEBUG
+
+server:
+  port: 0
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    instance-id: ${spring.application.name}:${random.uuid}

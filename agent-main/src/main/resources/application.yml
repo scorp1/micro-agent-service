@@ -1,0 +1,50 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5434/app
+    username: app
+    password: app
+    driverClassName: org.postgresql.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    format-sql: true
+  application:
+    name: agent-main
+  cloud:
+    openfeign:
+      client:
+        config:
+          default:
+            connectTimeout: 5000
+            readTimeout: 5000
+  kafka:
+    bootstrap-servers: localhost:29092  # Адрес брокера Kafka (для Docker это может быть "kafka:9092")
+    consumer:
+      group-id: my-group  # Уникальная группа потребителей
+      auto-offset-reset: earliest
+    producer:
+      acks: all  # Настройки подтверждения от Kafka
+    topics:
+      agent-report-request-create: agent-report-request-create
+      agent-report-response-create: agent-report-response-create
+      policy-period-request-create: policy-period-request-create
+      policy-period-response-create: policy-period-response-create
+
+server:
+  port: 8081
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+
+eign:
+  client:
+    config:
+      agent-report:
+        loggerLevel: FULL
+logging:
+  level:
+    org.example.agentreportclient.client: DEBUG

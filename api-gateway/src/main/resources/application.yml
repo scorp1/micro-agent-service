@@ -1,0 +1,70 @@
+server:
+  port: 8085
+
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      routes:
+        - id: agent-report
+          uri: lb://agent-report
+          predicates:
+            - Path=/api/agent-reports/**
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: agent-report  # ???, ??????????????? ???????????? ? resilience4j
+                fallbackUri: forward:/fallback
+        - id: policy-period
+          uri: lb://policy-period
+          predicates:
+            - Path=/api/policy-periods/**
+        - id: agent-main
+          uri: lb://agent-main
+          predicates:
+            - Path=/api/agent-main
+        - id: fallback-route
+          uri: "forward:/fallback"
+          predicates:
+            - Path=/fallback
+      discovery:
+        locator:
+          enabled: true
+          lowerCaseServiceId: true
+
+resilience4j:
+  circuitbreaker:
+    configs:
+      default:
+        registerHealthIndicator: true
+        slidingWindowSize: 100
+        minimumNumberOfCalls: 10
+        permittedNumberOfCallsInHalfOpenState: 10
+        automaticTransitionFromOpenToHalfOpenEnabled: true
+        waitDurationInOpenState: 10s
+        failureRateThreshold: 50
+        eventConsumerBufferSize: 10
+    instances:
+      agentReportCircuitBreaker:
+        baseConfig: default
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,circuitbreakers,circuitbreakerevents
+
+logging:
+  file:
+    path: logs               # ??????? ????? logs ? ????? ???????
+    name: logs/application.log  # ?????? ???? ? ????? ?????
+  level:
+    root: INFO               # ????? ??????? ???????????
+    org.springframework: INFO
+    io.github.resilience4j: DEBUG  # ????????? ???? Circuit Breaker
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/

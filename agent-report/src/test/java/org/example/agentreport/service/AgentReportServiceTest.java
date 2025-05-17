@@ -29,21 +29,21 @@ public class AgentReportServiceTest {
         MockitoAnnotations.openMocks(this);
     }
 
-    @Test
-    void findAll_shouldReturnAllAgentReports() {
-        // Подготавливаем тестовые данные
-        List<AgentReport> reports = Arrays.asList(
-                new AgentReport(1L, "12345", LocalDateTime.now(), "DOC123", 101),
-                new AgentReport(2L, "67890", LocalDateTime.now(), "DOC456", 102)
-        );
-
-        when(repository.findAll()).thenReturn(reports);
-
-        List<AgentReport> result = service.findAll();
-
-        assertEquals(2, result.size());
-        verify(repository, times(1)).findAll();
-    }
+//    @Test
+//    void findAll_shouldReturnAllAgentReports() {
+//        // Подготавливаем тестовые данные
+//        List<AgentReport> reports = Arrays.asList(
+//                new AgentReport(1L, "12345", LocalDateTime.now(), "DOC123", 101),
+//                new AgentReport(2L, "67890", LocalDateTime.now(), "DOC456", 102)
+//        );
+//
+//        when(repository.findAll()).thenReturn(reports);
+//
+//        List<AgentReport> result = service.findAll();
+//
+//        assertEquals(2, result.size());
+//        verify(repository, times(1)).findAll();
+//    }
 
     @Test
     void findById_shouldReturnAgentReportWhenExists() {

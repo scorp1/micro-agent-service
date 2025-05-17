@@ -10,12 +10,12 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Service
-public class PolicyPeriodRequestHandler extends AbstractKafkaRequestHandler<PolicyPeriodDTO> {
+public class PolicyPeriodCreateRequestHandler extends AbstractKafkaRequestHandler<PolicyPeriodDTO> {
     @Value("${spring.kafka.topics.policy-period-request-create}")
     private String topic;
     private final Map<String, CompletableFuture<PolicyPeriodDTO>> responseMapPolicyPeriods = new ConcurrentHashMap<>();
 
-    public PolicyPeriodRequestHandler(KafkaTemplate<String, String> kafkaTemplate) {
+    public PolicyPeriodCreateRequestHandler(KafkaTemplate<String, String> kafkaTemplate) {
         super(kafkaTemplate);
     }
 

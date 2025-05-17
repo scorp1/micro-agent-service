@@ -26,7 +26,7 @@ public class AgentReport {
 
     @CreationTimestamp
     @Column(name = "create_time", nullable = false)
-    private Date createTime;
+    private LocalDateTime createTime;
 
     @Column(name = "doc_uid", nullable = false)
     private String docUID;
@@ -41,7 +41,4 @@ public class AgentReport {
     @Column(name = "is_esign")
     private Boolean isESign;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "esignature_id")
-    private AgentReportESignature agentReportESignature;
 }

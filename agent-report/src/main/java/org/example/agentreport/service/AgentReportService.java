@@ -1,6 +1,9 @@
 package org.example.agentreport.service;
 
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.example.agentreport.dto.AgentReportDto;
+import org.example.agentreport.dto.PolicyPeriodSnapshotDto;
 import org.example.agentreport.entity.AgentReport;
 import org.example.agentreport.repository.AgentReportRepository;
 import org.springframework.stereotype.Service;
@@ -26,8 +29,35 @@ public class AgentReportService {
         return agentReportRepository.saveAndFlush(agentReport);
     }
 
-    public List<AgentReport> findAll() {
-        return agentReportRepository.findAll();
+    @Transactional(readOnly = true)
+    public List<AgentReportDto> findAll() {
+        return agentReportRepository.findAll().stream()
+            .map(this::mapToDto)
+            .toList();
+    }
+
+    private AgentReportDto mapToDto(AgentReport report) {
+        AgentReportDto dto = new AgentReportDto();
+        dto.setId(report.getId());
+        dto.setReportNumber(report.getReportNumber());
+        dto.setCreateTime(report.getCreateTime());
+        dto.setDocUID(report.getDocUID());
+        dto.setAgentLNR(report.getAgentLNR());
+        dto.setIsESign(report.getIsESign());
+
+        // Пример для маппинга полей из полей `polices`
+        if (report.getPolices() != null) {
+            dto.setPolices(
+                report.getPolices().stream()
+                    .map(police -> new PolicyPeriodSnapshotDto(
+                        police.getId(),
+                        police.getPolicyNumber(),
+                        police.getReportNumber()))
+                    .collect(Collectors.toList())
+            );
+        }
+
+        return dto;
     }
 
 

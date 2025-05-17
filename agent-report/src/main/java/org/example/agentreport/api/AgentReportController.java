@@ -3,6 +3,7 @@ package org.example.agentreport.api;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.example.agentreport.dto.AgentReportDto;
 import org.example.agentreport.entity.AgentReport;
 import org.example.agentreport.service.AgentReportService;
 import org.springframework.http.HttpStatus;
@@ -45,8 +46,8 @@ public class AgentReportController {
 
     @GetMapping
     @Operation(summary = "Получить все отчеты", description = "Возвращает все отчеты")
-    public ResponseEntity<List<AgentReport>> getAllAgentReports() {
-        List<AgentReport> agentReports = agentReportService.findAll();
+    public ResponseEntity<List<AgentReportDto>> getAllAgentReports() {
+        List<AgentReportDto> agentReports = agentReportService.findAll();
         return new ResponseEntity<>(agentReports, HttpStatus.OK);
     }
 

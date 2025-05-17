@@ -3,8 +3,10 @@ package org.example.agentmain.api;
 import lombok.RequiredArgsConstructor;
 import org.example.agentmain.dto.AgentReportDTO;
 import org.example.agentmain.dto.PolicyPeriodDTO;
-import org.example.agentmain.kafka.AgentReportRequestHandler;
-import org.example.agentmain.kafka.PolicyPeriodRequestHandler;
+import org.example.agentmain.kafka.AgentReportCreateRequestHandler;
+import org.example.agentmain.kafka.AgentReportGetRequestHandler;
+import org.example.agentmain.kafka.PolicyPeriodCreateRequestHandler;
+import org.example.agentmain.kafka.PolicyPeriodGetRequestHandler;
 import org.example.agentmain.service.AgentReportClientService;
 import org.example.agentmain.service.PolicyPeriodClientService;
 import org.springframework.http.HttpStatus;
@@ -20,33 +22,36 @@ public class AgentMainController {
 
     private final AgentReportClientService agentReportClientService;
     private final PolicyPeriodClientService policyPeriodClientService;
-    private final AgentReportRequestHandler agentReportRequestHandler;
-    private final PolicyPeriodRequestHandler policyPeriodRequestHandler;
+    private final AgentReportCreateRequestHandler agentReportRequestHandler;
+    private final PolicyPeriodCreateRequestHandler policyPeriodCreateRequestHandler;
+    private final AgentReportGetRequestHandler agentReportGetRequestHandler;
+    private final PolicyPeriodGetRequestHandler policyPeriodGetRequestHandler;
 
     @GetMapping("/agent-reports")
-    public ResponseEntity<AgentReportDTO[]> getAgentReports() {
-        AgentReportDTO[] reports = agentReportClientService.getAllReports();
+    public CompletableFuture<String> getAgentReports() {
 
-        return new ResponseEntity<>(reports, HttpStatus.OK);
+        var agentReports = agentReportGetRequestHandler.sendRequest();
+
+        return agentReports;
     }
 
     @GetMapping("/policy-periods")
-    public ResponseEntity<PolicyPeriodDTO[]> getPolicyPeriods() {
-        PolicyPeriodDTO[] periods = policyPeriodClientService.getAllPolicyPeriods();
+    public CompletableFuture<String> getPolicyPeriods() {
+        var periods = policyPeriodGetRequestHandler.sendRequest();
 
-        return new ResponseEntity<>(periods, HttpStatus.OK);
+        return periods;
     }
 
-    @PostMapping("/agent-reports")
+    @PostMapping("/agent-report")
     public CompletableFuture<AgentReportDTO> createAgentReport(@RequestBody AgentReportDTO agentReportDTO) {
 
         return agentReportRequestHandler.sendRequest(agentReportDTO);
     }
 
-    @PostMapping("/policy-periods")
+    @PostMapping("/policy-period")
     public CompletableFuture<PolicyPeriodDTO> createPolicyPeriod(@RequestBody PolicyPeriodDTO policyPeriodDTO) {
 
-        return policyPeriodRequestHandler.sendRequest(policyPeriodDTO);
+        return policyPeriodCreateRequestHandler.sendRequest(policyPeriodDTO);
     }
 
 //    @GetMapping("/agent-reports-add/{agentLnr}")

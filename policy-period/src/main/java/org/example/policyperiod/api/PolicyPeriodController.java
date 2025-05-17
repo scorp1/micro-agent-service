@@ -1,6 +1,7 @@
 package org.example.policyperiod.api;
 
 import lombok.RequiredArgsConstructor;
+import org.example.policyperiod.dto.PolicyPeriodDto;
 import org.example.policyperiod.entity.PolicyPeriod;
 import org.example.policyperiod.service.PolicyPeriodService;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,10 +21,10 @@ public class PolicyPeriodController {
     private String instanceId;
 
     @GetMapping("/all")
-    public ResponseEntity<List<PolicyPeriod>> getAllPolicyPeriods() {
-        List<PolicyPeriod> periods = service.getAll();
+    public ResponseEntity<List<PolicyPeriodDto>> getAllPolicyPeriods() {
+        List<PolicyPeriodDto> periods = service.findAll();
         if (periods.size() > 0) {
-            return new ResponseEntity<>(service.getAll(), HttpStatus.OK);
+            return new ResponseEntity<>(service.findAll(), HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }

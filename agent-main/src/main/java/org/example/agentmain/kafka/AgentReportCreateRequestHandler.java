@@ -1,6 +1,5 @@
 package org.example.agentmain.kafka;
 
-import lombok.RequiredArgsConstructor;
 import org.example.agentmain.dto.AgentReportDTO;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -11,12 +10,12 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Service
-public class AgentReportRequestHandler extends AbstractKafkaRequestHandler<AgentReportDTO> {
+public class AgentReportCreateRequestHandler extends AbstractKafkaRequestHandler<AgentReportDTO> {
     @Value("${spring.kafka.topics.agent-report-request-create}")
     private String topic;
     private final Map<String, CompletableFuture<AgentReportDTO>> responseMapAgentReports = new ConcurrentHashMap<>();
 
-    public AgentReportRequestHandler(KafkaTemplate<String, String> kafkaTemplate) {
+    public AgentReportCreateRequestHandler(KafkaTemplate<String, String> kafkaTemplate) {
         super(kafkaTemplate);
     }
 

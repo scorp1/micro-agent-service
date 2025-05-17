@@ -18,7 +18,4 @@ public class AgentReportESignature {
     @Column(name = "doc_uid")
     private String docUID;
 
-    @OneToOne(mappedBy = "agentReportESignature", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private AgentReport agentReport;
-
 }

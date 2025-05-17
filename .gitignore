@@ -1,5 +1,7 @@
 HELP.md
 target/
+api-gateway/logs/application.log*
+logs/application.log*
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/

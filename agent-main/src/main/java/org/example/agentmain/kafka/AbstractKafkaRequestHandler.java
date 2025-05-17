@@ -45,4 +45,8 @@ public abstract class AbstractKafkaRequestHandler<T> {
         }
     }
 
+    public KafkaTemplate<String, String> getKafkaTemplate() {
+        return kafkaTemplate;
+    }
+
 }

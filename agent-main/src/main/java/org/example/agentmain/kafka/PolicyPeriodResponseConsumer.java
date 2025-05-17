@@ -12,7 +12,8 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class PolicyPeriodResponseConsumer {
 
-    private final PolicyPeriodRequestHandler policyPeriodRequestHandler;
+    private final PolicyPeriodCreateRequestHandler policyPeriodCreateRequestHandler;
+    private final PolicyPeriodGetRequestHandler policyPeriodGetRequestHandler;
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @KafkaListener(topics = "policy-period-response-create", groupId = "my-group")
@@ -22,9 +23,20 @@ public class PolicyPeriodResponseConsumer {
             objectMapper.registerModule(new JavaTimeModule());
             PolicyPeriodDTO response = objectMapper.readValue(record.value(), PolicyPeriodDTO.class);
             System.out.println("Received response from Kafka: " + response);
-            policyPeriodRequestHandler.processResponse(requestId, response);
+            policyPeriodCreateRequestHandler.processResponse(requestId, response);
         }catch (Exception e) {
             System.out.println("Error : " + e.getMessage());
         }
+    }
+
+    @KafkaListener(topics = "policy-period-get-all-response", groupId = "my-group")
+    public void getAllPolicyPeriodResponse(ConsumerRecord<String, String> record) {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+
+        var requestId = record.key();
+        var response = record.value();
+
+        policyPeriodGetRequestHandler.processResponse(requestId, response);
     }
 }

@@ -1,5 +1,6 @@
 package org.example.agentmain.dto;
 
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,4 +17,6 @@ public class AgentReportDTO {
     private LocalDateTime createTime;
     private String docUID;
     private Integer agentLNR;
+    private List<PolicyPeriodSnapshotDto> polices;
+    private Boolean isESign;
 }
